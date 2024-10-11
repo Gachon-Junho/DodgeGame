@@ -4,7 +4,24 @@ using UnityEngine;
 public class MonoSingleton<T> : MonoBehaviour
     where T : MonoBehaviour
 {
-    public static T Current;
+    public static bool AllowMultipleInitialize = true;
+
+    public static T Current
+    {
+        get => Current;
+        set
+        {
+            if (current == null || AllowMultipleInitialize)
+            {
+                current = value;
+                return;
+            }
+
+            throw new InvalidOperationException($"{typeof(T)} is already Initialized. Consider set AllowMultipleInitialize to false.");
+        }
+    }
+
+    private static T current;
 
     protected virtual void Awake()
     {
